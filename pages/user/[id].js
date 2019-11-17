@@ -4,9 +4,7 @@ import { User } from '../../components/User';
 function UserPage({ user }) {
   return (
     <>
-      <div style={{ width: '1000px', margin: '0 auto' }}>
-        <User model={user} />
-      </div>
+      <User model={user} />
     </>
   );
 }

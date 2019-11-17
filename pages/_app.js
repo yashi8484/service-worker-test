@@ -6,10 +6,10 @@ class RootApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <>
+      <div style={{ width: '1000px', margin: '0 auto' }}>
         <Component {...pageProps} />
         <OfflineSupport />
-      </>
+      </div>
     );
   }
 }
