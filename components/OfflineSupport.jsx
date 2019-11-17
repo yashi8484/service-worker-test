@@ -5,8 +5,10 @@ class OfflineSupport extends React.Component {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/sw.js')
-        .then(() => {
-          console.log('service worker registration successful.');
+        .then(registration => {
+          console.log(
+            `service worker registration successful. scope=${registration.scope}`
+          );
         })
         .catch(e => {
           console.warn('service worker registration failed', e.message);
