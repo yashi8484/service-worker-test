@@ -1,5 +1,5 @@
 const CACHE_NAME = 'v1';
-const ASSET_URLS_TO_CACHE = [];
+const ASSET_URLS_TO_CACHE = ['./offline.html'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -37,24 +37,37 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cacheResponse => {
-      // キャッシュがヒットすれば、キャッシュを返す
-      if (cacheResponse) {
-        console.log('return cache response!');
-        return cacheResponse;
-      }
-
-      return fetch(event.request).then(response => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+    caches
+      .match(event.request)
+      .then(cacheResponse => {
+        // キャッシュがヒットすれば、キャッシュを返す
+        if (cacheResponse) {
+          console.log('return cache response!');
+          return cacheResponse;
         }
-        // レスポンスをキャッシュに保存する
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, response.clone());
-          return response;
+
+        return fetch(event.request).then(response => {
+          if (
+            !response ||
+            response.status !== 200 ||
+            response.type !== 'basic'
+          ) {
+            return response;
+          }
+          // レスポンスをキャッシュに保存する
+          return caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, response.clone());
+            return response;
+          });
         });
-      });
-    })
+      })
+      .catch(e => {
+        // オフライン時のフォールバック
+        if (event.request.mode === 'navigate') {
+          console.error('Fetch failed; returning offline page instead.', e);
+          return caches.match('offline.html');
+        }
+      })
   );
 });
 
