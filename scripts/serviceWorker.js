@@ -70,7 +70,3 @@ self.addEventListener('fetch', event => {
       })
   );
 });
-
-self.addEventListener('sync', event => {
-  console.log('sync event occurred');
-});
